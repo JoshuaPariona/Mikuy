@@ -7,30 +7,40 @@ import {
   TextInput,
   StatusBar,
   ScrollView,
+  Keyboard,
 } from "react-native";
 
 import Fontisto from "@expo/vector-icons/Fontisto";
 import Entypo from "@expo/vector-icons/Entypo";
-import { SimpleLineIcons, Ionicons, AntDesign } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 
 import routerController from "../controllers/RouterController.js";
 import { colors } from "../themes/colors";
 import { dimensions } from "../utils/dimensions";
 
+import AnimatedExpandableView from "./animated/AnimatedExpandableView.js";
 import moment from "moment";
 
 //FIXME: In Config file
 import "moment/locale/es";
 moment.locale("es");
 
-const AppBar = () => {
+const AppBar = ({ isAtTop }) => {
   return (
     <View style={styles.appBar}>
       <AppBarHeader />
-      <FlexibleSpace />
+      <FlexibleSpace isAtTop={isAtTop} />
+      <SearchInput />
     </View>
   );
+};
+
+AppBar.propTypes = {
+  isAtTop: PropTypes.bool.isRequired,
 };
 
 const AppBarHeader = () => {
@@ -40,10 +50,12 @@ const AppBarHeader = () => {
 
   return (
     <View style={styles.appBarHeader}>
-      <Image
-        style={styles.appBarHeaderLogo}
-        source={require("../../assets/images/mikuy_logo.png")}
-      />
+      <View style={styles.appBarHeaderLogo}>
+        <Image
+          style={styles.appBarHeaderLogo}
+          source={require("../../assets/images/mikuy_logo.png")}
+        />
+      </View>
       <View style={styles.appBarHeaderActions}>
         <Pressable
           onPress={(_) =>
@@ -68,16 +80,23 @@ const AppBarHeader = () => {
   );
 };
 
-const FlexibleSpace = () => {
+const FlexibleSpace = ({ isAtTop }) => {
   //FIXME: In user Config file
   const user = {
     name: "Mikuy",
   };
 
-  const momentDate = moment().format("dddd D [de] MMMM [del] YYYY, h:mm a");
+  const momentDate = moment();
+  const momentFormat = momentDate.format("dddd D [de] MMMM [del] YYYY, h:mm a");
 
   return (
-    <View style={styles.flexibleSpace}>
+    <AnimatedExpandableView
+      style={styles.flexibleSpace}
+      visibility={isAtTop}
+      minSize={[null, 0]}
+      maxSize={[null, 150]}
+    >
+      <View style={{ height: 40 }}></View>
       <View style={styles.flexibleSpaceHeader}>
         <Image
           style={styles.userImage}
@@ -86,16 +105,19 @@ const FlexibleSpace = () => {
         <View style={styles.greetings}>
           <Text style={styles.title}>Hola, {user.name}!</Text>
           <Text style={styles.subtitle}>
-            {momentDate.charAt(0).toUpperCase() + momentDate.slice(1)}
+            {momentFormat.charAt(0).toUpperCase() + momentFormat.slice(1)}
           </Text>
           <Text style={styles.subtitle}>
             Preparemos una cena para la familia!
           </Text>
         </View>
       </View>
-      <SearchInput />
-    </View>
+    </AnimatedExpandableView>
   );
+};
+
+FlexibleSpace.propTypes = {
+  isAtTop: PropTypes.bool.isRequired,
 };
 
 const SearchInput = () => {
@@ -105,6 +127,7 @@ const SearchInput = () => {
   function onSelectedItem(item) {
     setRecommendVisibility(false);
     setInputValue(item.name);
+    Keyboard.dismiss();
   }
 
   function cleanInput() {
@@ -116,8 +139,8 @@ const SearchInput = () => {
       <View style={styles.searchInputContent}>
         <View style={{ flexDirection: "row", gap: 20, alignItems: "center" }}>
           <Pressable>
-            <SimpleLineIcons
-              name="magnifier"
+            <FontAwesome
+              name="search"
               size={dimensions.iconSize}
               color={colors.primary}
             />
@@ -129,12 +152,13 @@ const SearchInput = () => {
             value={inputValue}
             onChangeText={(text) => setInputValue(text)}
             onFocus={() => setRecommendVisibility(true)}
+            onBlur={() => setRecommendVisibility(false)}
           />
         </View>
         {inputValue == "" ? (
           <Pressable>
-            <Ionicons
-              name="filter"
+            <FontAwesome6
+              name="sliders"
               size={dimensions.iconSize}
               color={colors.primary}
             />
@@ -149,9 +173,13 @@ const SearchInput = () => {
           </Pressable>
         )}
       </View>
-      {recommendVisibility ? (
+      <AnimatedExpandableView
+        visibility={recommendVisibility}
+        minSize={[null, 0]}
+        maxSize={[null, 150]}
+      >
         <RecommendationList onSelectedItem={onSelectedItem} />
-      ) : null}
+      </AnimatedExpandableView>
     </View>
   );
 };
@@ -169,27 +197,29 @@ const RecommendationList = ({ onSelectedItem }) => {
   ];
 
   return (
-    <View style={styles.recommendationList}>
-      <ScrollView
-        style={{ paddingHorizontal: 40 }}
-        showsVerticalScrollIndicator={false}
-        keyboardDismissMode="on-drag"
-        overScrollMode="never"
-      >
-        {recommendation.map((item) => (
-          <Pressable key={item.id} onPress={() => onSelectedItem(item)}>
-            <Text style={styles.recommendationItem}>{item.name}</Text>
-            <View
-              style={{
-                borderBottomColor: colors.primary,
-                borderBottomWidth: 1,
-              }}
-            />
-          </Pressable>
-        ))}
-      </ScrollView>
-    </View>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      overScrollMode="never"
+      keyboardShouldPersistTaps="handled"
+      style={styles.recommendationList}
+    >
+      {recommendation.map((item) => (
+        <Pressable key={item.id} onPress={() => onSelectedItem(item)}>
+          <Text style={styles.recommendationItem}>{item.name}</Text>
+          <View
+            style={{
+              borderBottomColor: colors.primary,
+              borderBottomWidth: 1,
+            }}
+          />
+        </Pressable>
+      ))}
+    </ScrollView>
   );
+};
+
+RecommendationList.propTypes = {
+  onSelectedItem: PropTypes.func.isRequired,
 };
 
 export default AppBar;
@@ -199,7 +229,6 @@ const styles = StyleSheet.create({
     paddingTop: StatusBar.currentHeight ? StatusBar.currentHeight + 10 : 40,
     paddingBottom: 20,
     paddingHorizontal: 30,
-    gap: 40,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
     backgroundColor: colors.primary,
@@ -209,8 +238,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   appBarHeaderLogo: {
+    objectFit: "cover",
     width: 82,
-    aspectRatio: 82 / 54,
+    height: 54,
   },
   appBarHeaderActions: {
     flexDirection: "row",
@@ -218,11 +248,11 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   flexibleSpace: {
-    gap: 40,
+    justifyContent: "center",
   },
   flexibleSpaceHeader: {
     flexDirection: "row",
-    gap: 20,
+    gap: 20
   },
   userImage: {
     height: 70,
@@ -248,6 +278,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 30,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
+    marginTop: 40,
     paddingHorizontal: 30,
     paddingVertical: 12,
   },
@@ -262,8 +293,8 @@ const styles = StyleSheet.create({
     fontWeight: "regular",
   },
   recommendationList: {
-    paddingVertical: 10,
-    height: 100,
+    marginTop: 20,
+    paddingHorizontal: 40,
   },
   recommendationItem: {
     paddingVertical: 5,
