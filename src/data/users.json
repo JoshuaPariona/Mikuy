@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "name": "CinnamorRoll",
+    "image": "https://cdn.sanriowiki.com/2/23/Cinnamoroll.png",
+    "followers": 1521,
+    "dishes": 152
+  },
+  {
+    "id": 2,
+    "name": "Luciana Cook",
+    "image": "https://www.womeninthefoodindustry.com/wordpress/wp-content/uploads/Luciana-Berry-Head-Chef-Mano-Mayfair-2-720x720.jpg",
+    "followers": 957,
+    "dishes": 41
+  },
+  {
+    "id": 3,
+    "name": "Francisca Roo",
+    "image": "https://phantom-expansion.unidadeditorial.es/42fad24e64c13182dc0cd9d78704cc08/crop/31x259/1311x1113/resize/1200/f/webp/assets/multimedia/imagenes/2024/03/31/17119082778614.jpg",
+    "followers": 78,
+    "dishes": 14
+  }
+]
