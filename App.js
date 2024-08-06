@@ -1,46 +1,49 @@
 import { StatusBar } from "expo-status-bar";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { StyleSheet, Animated, View, ScrollView } from "react-native";
 import AppBar from "./src/components/AppBar";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
+import Home from "./src/screens/home/Home";
+import { colors } from "./src/themes/colors";
+import { dimensions } from "./src/utils/dimensions";
+import BottomNavBar from "./src/components/BottomNavBar";
+import Notifier from "./src/components/Notifier";
 
 export default function App() {
-  const [isAtTop, setIsAtTop] = useState(true);
+  const scrollOffsetY = useRef(new Animated.Value(0)).current;
 
-  const handleScroll = (event) => {
-    const offsetY = event.nativeEvent.contentOffset.y;
-    if (offsetY <= 0) {
-      if (isAtTop == false) {
-        console.log("scrollTop");
-        setIsAtTop(true);
-      }
-    } else {
-      if (isAtTop == true) {
-        console.log("scrollDown");
-        setIsAtTop(false);
-      }
-    }
+  const maxAppBarHeight =
+    dimensions.statusbar +
+    dimensions.layoutVerticalPadding +
+    dimensions.iconSize +
+    24 + // input padding
+    54 + // logo height
+    dimensions.layoutVerticalGap * 2 +
+    dimensions.circleAvatarSizeLarge;
+
+  const [page, setPage] = useState(2);
+
+  const handleNavigation = (page) => {
+    setPage(page);
   };
 
   return (
     <View style={styles.container}>
-      <AppBar isAtTop={isAtTop} />
+      <AppBar animScrollOffsetY={scrollOffsetY} />
       <ScrollView
-        style={{ flex: 1, zIndex: -1 }}
+        contentContainerStyle={{ paddingTop: maxAppBarHeight }}
         keyboardDismissMode="on-drag"
-        //showsVerticalScrollIndicator={false}
+        overScrollMode="never"
         scrollEventThrottle={16}
-        onScroll={handleScroll}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
+          { useNativeDriver: false }
+        )}
+        showsVerticalScrollIndicator={false}
       >
-        <View style={styles.box}></View>
-        <View style={styles.box}></View>
-        <View style={styles.box}></View>
-        <View style={styles.box}></View>
-        <View style={styles.box}></View>
-        <View style={styles.box}></View>
-        <View style={styles.box}></View>
-        <View style={styles.box}></View>
-        <View style={styles.box}></View>
+        <Home />
       </ScrollView>
+      <Notifier />
+      <BottomNavBar page={page} onNav={handleNavigation} />
       <StatusBar style="auto" />
     </View>
   );
@@ -49,11 +52,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-  },
-  box: {
-    margin: 40,
-    height: 100,
-    backgroundColor: "red",
+    backgroundColor: colors.background,
   },
 });
