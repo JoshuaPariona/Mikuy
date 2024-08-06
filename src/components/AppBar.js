@@ -5,7 +5,6 @@ import {
   Image,
   Pressable,
   TextInput,
-  StatusBar,
   ScrollView,
   Keyboard,
 } from "react-native";
@@ -23,30 +22,35 @@ import { colors } from "../themes/colors";
 import { dimensions } from "../utils/dimensions";
 
 import AnimatedExpandableView from "./animated/AnimatedExpandableView.js";
+import AnimatedRotateSwitchComponent from "./animated/AnimatedRotateSwitchComponent.js";
+import AnimatedExpandableStepView from "./animated/AnimatedExpandableStepView.js";
+import AnimatedSwingView from "./animated/AnimatedSwingView.js";
+
 import moment from "moment";
 
 //FIXME: In Config file
 import "moment/locale/es";
 moment.locale("es");
 
-const AppBar = ({ isAtTop }) => {
+const AppBar = ({ animScrollOffsetY }) => {
   return (
     <View style={styles.appBar}>
       <AppBarHeader />
-      <FlexibleSpace isAtTop={isAtTop} />
+      <FlexibleSpace animScrollOffsetY={animScrollOffsetY} />
       <SearchInput />
     </View>
   );
 };
 
 AppBar.propTypes = {
-  isAtTop: PropTypes.bool.isRequired,
+  animScrollOffsetY: PropTypes.any.isRequired,
 };
 
 const AppBarHeader = () => {
   function handleModal(event) {
     console.log("modal");
   }
+  const [pressed, setPressed] = useState(false);
 
   return (
     <View style={styles.appBarHeader}>
@@ -58,15 +62,18 @@ const AppBarHeader = () => {
       </View>
       <View style={styles.appBarHeaderActions}>
         <Pressable
-          onPress={(_) =>
-            routerController.navigateTo(routerController.routesName.profile)
-          }
+          onPress={(_) => {
+            setPressed(!pressed);
+            routerController.navigateTo(routerController.routesName.profile);
+          }}
         >
-          <Fontisto
-            name="bell"
-            size={dimensions.iconSize}
-            color={colors.onPrimary}
-          />
+          <AnimatedSwingView state={pressed}>
+            <Fontisto
+              name="bell"
+              size={dimensions.iconSize}
+              color={colors.onPrimary}
+            />
+          </AnimatedSwingView>
         </Pressable>
         <Pressable onPress={handleModal}>
           <Entypo
@@ -80,7 +87,7 @@ const AppBarHeader = () => {
   );
 };
 
-const FlexibleSpace = ({ isAtTop }) => {
+const FlexibleSpace = ({ animScrollOffsetY }) => {
   //FIXME: In user Config file
   const user = {
     name: "Mikuy",
@@ -89,14 +96,14 @@ const FlexibleSpace = ({ isAtTop }) => {
   const momentDate = moment();
   const momentFormat = momentDate.format("dddd D [de] MMMM [del] YYYY, h:mm a");
 
+  /**/
   return (
-    <AnimatedExpandableView
-      style={styles.flexibleSpace}
-      visibility={isAtTop}
+    <AnimatedExpandableStepView
+      step={animScrollOffsetY}
       minSize={[null, 0]}
       maxSize={[null, 150]}
     >
-      <View style={{ height: 40 }}></View>
+      <View style={{ height: dimensions.layoutVerticalGap }}></View>
       <View style={styles.flexibleSpaceHeader}>
         <Image
           style={styles.userImage}
@@ -112,12 +119,12 @@ const FlexibleSpace = ({ isAtTop }) => {
           </Text>
         </View>
       </View>
-    </AnimatedExpandableView>
+    </AnimatedExpandableStepView>
   );
 };
 
 FlexibleSpace.propTypes = {
-  isAtTop: PropTypes.bool.isRequired,
+  animScrollOffsetY: PropTypes.any.isRequired,
 };
 
 const SearchInput = () => {
@@ -131,13 +138,32 @@ const SearchInput = () => {
   }
 
   function cleanInput() {
+    console.log("clean");
     setInputValue("");
+  }
+
+  function filter() {
+    console.log("filter");
+  }
+
+  function handleActionPress() {
+    if (inputValue != "") {
+      cleanInput();
+    } else {
+      filter();
+    }
   }
 
   return (
     <View style={styles.searchInput}>
       <View style={styles.searchInputContent}>
-        <View style={{ flexDirection: "row", gap: 20, alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            gap: dimensions.layoutHorizontalGap,
+            alignItems: "center",
+          }}
+        >
           <Pressable>
             <FontAwesome
               name="search"
@@ -155,23 +181,26 @@ const SearchInput = () => {
             onBlur={() => setRecommendVisibility(false)}
           />
         </View>
-        {inputValue == "" ? (
-          <Pressable>
-            <FontAwesome6
-              name="sliders"
-              size={dimensions.iconSize}
-              color={colors.primary}
-            />
-          </Pressable>
-        ) : (
-          <Pressable onPress={cleanInput}>
-            <AntDesign
-              name="close"
-              size={dimensions.iconSize}
-              color={colors.primary}
-            />
-          </Pressable>
-        )}
+        <Pressable onPress={handleActionPress}>
+          <AnimatedRotateSwitchComponent
+            toggle={inputValue != ""}
+            componentBaseSize="first"
+            firstComponent={
+              <FontAwesome6
+                name="sliders"
+                size={dimensions.iconSize}
+                color={colors.primary}
+              />
+            }
+            secondComponent={
+              <AntDesign
+                name="close"
+                size={dimensions.iconSize}
+                color={colors.primary}
+              />
+            }
+          />
+        </Pressable>
       </View>
       <AnimatedExpandableView
         visibility={recommendVisibility}
@@ -226,11 +255,14 @@ export default AppBar;
 
 const styles = StyleSheet.create({
   appBar: {
-    paddingTop: StatusBar.currentHeight ? StatusBar.currentHeight + 10 : 40,
-    paddingBottom: 20,
-    paddingHorizontal: 30,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
+    position: "absolute",
+    width: "100%",
+    zIndex: 2,
+    paddingTop: dimensions.statusbar,
+    paddingBottom: dimensions.layoutVerticalPadding,
+    paddingHorizontal: dimensions.layoutHorizontalPadding,
+    borderBottomLeftRadius: dimensions.layoutBorderRadius,
+    borderBottomRightRadius: dimensions.layoutBorderRadius,
     backgroundColor: colors.primary,
   },
   appBarHeader: {
@@ -245,60 +277,59 @@ const styles = StyleSheet.create({
   appBarHeaderActions: {
     flexDirection: "row",
     alignItems: "flex-end",
-    gap: 20,
+    gap: dimensions.layoutHorizontalGap,
   },
   flexibleSpace: {
     justifyContent: "center",
   },
   flexibleSpaceHeader: {
     flexDirection: "row",
-    gap: 20
+    gap: dimensions.layoutHorizontalGap,
   },
   userImage: {
-    height: 70,
-    width: 70,
-    borderRadius: 80,
+    height: dimensions.circleAvatarSizeLarge,
+    width: dimensions.circleAvatarSizeLarge,
+    borderRadius: dimensions.circleAvatarSizeLarge,
   },
   greetings: {
     justifyContent: "space-between",
   },
   title: {
     color: colors.onPrimary,
-    fontSize: 18,
+    fontSize: dimensions.fontSizeTitle,
     fontWeight: "bold",
   },
   subtitle: {
     color: colors.onPrimary,
-    fontSize: 14,
+    fontSize: dimensions.fontSizeSubTitle,
     fontWeight: "regular",
   },
   searchInput: {
-    backgroundColor: colors.onPrimary,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    marginTop: 40,
-    paddingHorizontal: 30,
+    backgroundColor: colors.secondary,
+    borderTopLeftRadius: dimensions.layoutBorderRadius,
+    borderTopRightRadius: dimensions.layoutBorderRadius,
+    borderBottomLeftRadius: dimensions.layoutBorderRadius,
+    borderBottomRightRadius: dimensions.layoutBorderRadius,
+    marginTop: dimensions.layoutVerticalGap,
+    paddingHorizontal: dimensions.layoutHorizontalPadding,
     paddingVertical: 12,
   },
   searchInputContent: {
-    alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
   },
   searchInputText: {
-    fontSize: 14,
+    fontSize: dimensions.fontSizeSubTitle,
     color: colors.onSecondary,
     fontWeight: "regular",
   },
   recommendationList: {
-    marginTop: 20,
+    marginTop: dimensions.layoutVerticalPadding,
     paddingHorizontal: 40,
   },
   recommendationItem: {
     paddingVertical: 5,
-    fontSize: 14,
+    fontSize: dimensions.fontSizeSubTitle,
     color: colors.onSecondary,
     fontWeight: "regular",
   },
