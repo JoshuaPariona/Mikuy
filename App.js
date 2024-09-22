@@ -1,57 +1,92 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Animated, View, ScrollView } from "react-native";
-import AppBar from "./src/components/AppBar";
-import React, { useRef, useState } from "react";
-import Home from "./src/screens/home/Home";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useEffect, useState } from "react";
+import { View } from "react-native";
+
+import AppRoot from "./src/screens/root/AppRoot";
+import Welcome from "./src/screens/welcome/Welcome";
+import Authentication from "./src/screens/authentication/Authentication";
+import Recipe from "./src/screens/recipe/Recipe";
+import CreateRecipe from "./src/screens/create/CreateRecipe";
+import EditProfile from "./src/screens/edit/EditProfile";
+
+import LocalStorageServices from "./src/services/LocalStorageServices";
+import AuthServices from "./src/services/AuthServices";
+
+import moment from "moment";
+import "moment/locale/es";
+moment.locale("es");
+
 import { colors } from "./src/themes/colors";
-import { dimensions } from "./src/utils/dimensions";
-import BottomNavBar from "./src/components/BottomNavBar";
-import Notifier from "./src/components/Notifier";
+
+import { useFonts } from "expo-font";
+import fonts from "./src/global/fonts";
+
+import { Provider, useDispatch, useSelector } from "react-redux";
+import { setUser } from "./src/features/auth/authSlice";
+import store from "./src/store/store";
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const scrollOffsetY = useRef(new Animated.Value(0)).current;
-
-  const maxAppBarHeight =
-    dimensions.statusbar +
-    dimensions.layoutVerticalPadding +
-    dimensions.iconSize +
-    24 + // input padding
-    54 + // logo height
-    dimensions.layoutVerticalGap * 2 +
-    dimensions.circleAvatarSizeLarge;
-
-  const [page, setPage] = useState(2);
-
-  const handleNavigation = (page) => {
-    setPage(page);
-  };
-
   return (
-    <View style={styles.container}>
-      <AppBar animScrollOffsetY={scrollOffsetY} />
-      <ScrollView
-        contentContainerStyle={{ paddingTop: maxAppBarHeight }}
-        keyboardDismissMode="on-drag"
-        overScrollMode="never"
-        scrollEventThrottle={16}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
-          { useNativeDriver: false }
-        )}
-        showsVerticalScrollIndicator={false}
-      >
-        <Home />
-      </ScrollView>
-      <Notifier />
-      <BottomNavBar page={page} onNav={handleNavigation} />
-      <StatusBar style="auto" />
-    </View>
+    <Provider store={store}>
+      <NavigationContainer>
+        <StackNavigator />
+      </NavigationContainer>
+    </Provider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-});
+const StackNavigator = () => {
+  const dispatch = useDispatch();
+  const { authUser } = useSelector((state) => state.auth);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isFirstTime, setIsFirstTime] = useState(true);
+  const [fontsLoaded] = useFonts(fonts);
+
+  useEffect(() => {
+    LocalStorageServices.getItem({
+      key: "@MikuyUserActivity/firstTime",
+      onSuccess: (item) => {
+        setIsFirstTime(item === "true");
+      },
+      onFinally: () => setIsLoading(false),
+    });
+  }, []);
+
+  useEffect(() => {
+    AuthServices.onAuthStateReady((authUser) => dispatch(setUser(authUser)));
+  }, []);
+
+  if (isLoading || !fontsLoaded) {
+    return <View style={{ flex: 1, backgroundColor: colors.background }} />;
+  }
+
+  return (
+    <Stack.Navigator
+      initialRouteName={isFirstTime ? "welcome" : "root"}
+      screenOptions={{
+        headerShown: false,
+        contentStyle: {
+          backgroundColor: colors.background,
+        },
+      }}
+    >
+      {isFirstTime && !authUser && (
+        <Stack.Screen name="welcome" component={Welcome} />
+      )}
+      {!authUser && (
+        <Stack.Screen name="authentication" component={Authentication} />
+      )}
+      {authUser && (
+        <>
+          <Stack.Screen name="create" component={CreateRecipe} />
+          <Stack.Screen name="edit" component={EditProfile} />
+        </>
+      )}
+      <Stack.Screen name="root" component={AppRoot} />
+      <Stack.Screen name="recipe" component={Recipe} />
+    </Stack.Navigator>
+  );
+};

@@ -2,14 +2,12 @@ let instance;
 let state = {
   isNotifying: false,
   queue: [],
-  setNotifierVisibility: undefined,  // expected
-  setNotifierMessage: undefined, // expected
 };
 
 class NotifierController {
   constructor() {
     if (instance) {
-      throw new Error("New instance cannot be created!!");
+      throw new Error("New NotifierController instance cannot be created!!");
     }
     instance = this;
   }
@@ -20,29 +18,32 @@ class NotifierController {
 
   #delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  async goNotification(msmComponent) {
+  async goNotification(
+    msmComponent,
+    setNotifierVisibility,
+    setNotifierMessage
+  ) {
     if (state.isNotifying) {
+      // Si esta notificando se encola el mensaje
       state.queue.push(msmComponent);
     } else {
-      state.isNotifying = true;
-      await this.#notify(msmComponent);
-
+      state.isNotifying = true; // Si no se cambia el estado
+      setNotifierVisibility(true); // y se abre el componente notifier
+      setNotifierMessage(msmComponent);
+      await this.#delay(2500);
       while (state.queue.length > 0) {
-        await this.#delay(500);
-        await this.#notify(state.queue.shift());
+        // mientras esta abierto se verifica
+        await this.#delay(500); // si hay mas mensajes y se settean
+        setNotifierMessage(state.queue.shift()); // y se desencola
+        await this.#delay(2500);
       }
-      state.isNotifying = false;
+      setNotifierVisibility(false); // si no hay notficaciones se cierra
+      state.isNotifying = false; // y se termina el estado
     }
-  }
-
-  async #notify(msmComponent) {
-    state.setNotifierMessage(msmComponent);
-    state.setNotifierVisibility(true);
-    await this.#delay(2500);
-    state.setNotifierVisibility(false);
   }
 }
 
+// controlador statico solo una instancia
 const singleton = Object.freeze(new NotifierController());
 
 export default singleton;

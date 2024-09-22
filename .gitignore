@@ -3,6 +3,9 @@
 # vscode
 .vscode/
 
+# secrets
+FirebaseApp.js
+
 # dependencies
 node_modules/
 
