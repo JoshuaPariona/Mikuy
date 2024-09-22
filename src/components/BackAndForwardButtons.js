@@ -11,7 +11,9 @@ const BackAndForwardButtons = (props) => {
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={props.onBack}
+      <Pressable
+        onPress={props.onBack}
+        hitSlop={5}
         onPressIn={() => setPressed([true, false])}
         onPressOut={() => setPressed([false, false])}
       >
@@ -23,7 +25,9 @@ const BackAndForwardButtons = (props) => {
           />
         </AnimatedScaleView>
       </Pressable>
-      <Pressable onPress={props.onForward}
+      <Pressable
+        onPress={props.onForward}
+        hitSlop={5}
         onPressIn={() => setPressed([false, true])}
         onPressOut={() => setPressed([false, false])}
       >

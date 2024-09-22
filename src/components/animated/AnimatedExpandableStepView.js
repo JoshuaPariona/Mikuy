@@ -4,26 +4,22 @@ import React from "react";
 import PropTypes from "prop-types";
 
 const AnimatedExpandableStepView = (props) => {
-  const { step, minSize, maxSize, children } = props;
-
-  const d = Math.sqrt(
-    (maxSize[0] - minSize[0]) ** 2 + (maxSize[1] - minSize[1]) ** 2
-  );
+  const { step, minSize, maxSize, range, withOpacity=true, children } = props;
 
   const styleExpandableStep = {
-    opacity: step.interpolate({
-      inputRange: [0, d],
+    opacity: withOpacity? step.interpolate({
+      inputRange: [0, range],
       outputRange: [1, 0],
       extrapolate: "clamp",
-    }),
+    }) : 1,
     maxHeight: step.interpolate({
-      inputRange: [0, (maxSize[1] ?? 4000) - (minSize[1] ?? 0)],
-      outputRange: [maxSize[1] ?? 4000, minSize[1] ?? 0],
+      inputRange: [0, range],
+      outputRange: [maxSize[1] ?? 4000, minSize[1] ?? 4000],
       extrapolate: "clamp",
     }),
     maxWidth: step.interpolate({
-      inputRange: [0, (maxSize[0] ?? 4000) - (minSize[0] ?? 0)],
-      outputRange: [maxSize[0] ?? 4000, minSize[0] ?? 0],
+      inputRange: [0, range],
+      outputRange: [maxSize[0] ?? 4000, minSize[0] ?? 4000],
       extrapolate: "clamp",
     }),
   };
@@ -36,6 +32,8 @@ AnimatedExpandableStepView.propTypes = {
   step: PropTypes.any.isRequired,
   minSize: PropTypes.array.isRequired,
   maxSize: PropTypes.array.isRequired,
+  range: PropTypes.number.isRequired,
+  withOpacity: PropTypes.bool,
 };
 
 export default AnimatedExpandableStepView;

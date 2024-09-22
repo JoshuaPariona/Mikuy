@@ -15,6 +15,7 @@ const AnimatedFadeSwitchComponent = (props) => {
     componentBaseSize, //first, second, undefined(first)
     duration,
     easing,
+    style
   } = props;
 
   const animated = useRef(new Animated.Value(toggle ? 1 : 0)).current;
@@ -55,10 +56,10 @@ const AnimatedFadeSwitchComponent = (props) => {
 
   return (
     <View
-      style={{
+      style={[{
         justifyContent: "center",
         alignItems: "center",
-      }}
+      },style]}
     >
       <Animated.View
         style={[
