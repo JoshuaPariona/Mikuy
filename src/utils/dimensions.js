@@ -1,27 +1,20 @@
-import { Platform, StatusBar } from "react-native"
 
-const statusbar = Platform.select(
-  {
-    web: 20,
-    android: StatusBar.currentHeight + 10,
-    ios: 35
-  }
-)
-
-export const dimensions = {
-  statusbar: statusbar,
-
+const dimensions = {
   bottomNavBarHeight: 70,
 
-  fontSizeTitle: 18,
-  fontSizeSubTitle: 14,
-  fontSizeSmall: 12,
-  fontSizeXSmall: 9,
+  fontSizeBig: 30,
+  fontSizeMedium: 22,
+  fontSizeTitle: 16,
+  fontSizeSubTitle: 13,
+  fontSizeSmall: 11,
+  fontSizeXSmall: 8,
 
   iconSize: 24,
   smallIconSize: 14,
 
+  circleAvatarSizeXLarge: 100,
   circleAvatarSizeLarge: 70,
+  circleAvatarSizeMedium: 50,
   circleAvatarSize: 40,
 
   layoutHorizontalPadding: 30,
@@ -33,6 +26,8 @@ export const dimensions = {
   sectionVerticalGap: 20,
   sectionHorizontalGap: 15,
   sectionBorderRadius: 10,
+  sectionHorizontalPadding: 20,
+  sectionVerticalPadding: 10,
 
   subSectionVerticalGap: 10,
   subSectionHorizontalGap: 10,
@@ -42,4 +37,8 @@ export const dimensions = {
 
   dishCard2H: 180,
   dishCard2W: 150,
-}
+
+  profileBannerHeight: 200,
+};
+
+export { dimensions };
