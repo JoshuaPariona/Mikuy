@@ -1,4 +1,4 @@
-import { Platform, StatusBar, StyleSheet, View, Animated } from "react-native";
+import { StyleSheet, View, Animated } from "react-native";
 import React from "react";
 import { dimensions } from "../../../utils/dimensions";
 import { colors } from "../../../themes/colors";
@@ -26,19 +26,6 @@ const TitleSection = ({ recipe, scrollOffsetY }) => {
     }),
   };
 
-  const styleTopPadding = {
-    height: scrollOffsetY.interpolate({
-      inputRange: [0, 450],
-      outputRange: [
-        0,
-        Platform.OS === "android"
-          ? StatusBar.currentHeight || 0
-          : dimensions.layoutVerticalPadding,
-      ],
-      extrapolate: "clamp",
-    }),
-  };
-
   return (
     <AnimatedBackGroundColorStepView
       style={styles.titleSection}
@@ -47,7 +34,6 @@ const TitleSection = ({ recipe, scrollOffsetY }) => {
       startColor={colors.background}
       endColor={colors.primary}
     >
-      <Animated.View style={styleTopPadding} />
       <View style={styles.header}>
         <Animated.Text style={[styles.bigTitle, styleTitleColor]}>
           {recipe.name || ""}

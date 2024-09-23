@@ -3,8 +3,6 @@ import {
   Text,
   View,
   ScrollView,
-  Platform,
-  StatusBar,
   TouchableOpacity,
   Modal,
 } from "react-native";
@@ -197,7 +195,6 @@ const CreateRecipe = ({ route, navigation }) => {
     <BottomSheetProvider>
       <View style={styles.createRecipe}>
         <View style={styles.appBarContainer}>
-          <View style={styles.statusBar} />
           <View style={styles.appBar}>
             <PopButton style={styles.popButton} />
             <Text style={styles.titleScreen}>AGREGAR UNA RECETA</Text>
@@ -292,9 +289,6 @@ const styles = StyleSheet.create({
     gap: dimensions.layoutVerticalGap,
     paddingHorizontal: dimensions.layoutHorizontalPadding,
     paddingVertical: dimensions.layoutVerticalPadding,
-  },
-  statusBar: {
-    height: Platform.OS === "android" ? StatusBar.currentHeight || 0 : 0,
   },
   appBar: {
     paddingVertical: dimensions.layoutVerticalPadding,

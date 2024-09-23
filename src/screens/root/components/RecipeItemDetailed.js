@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { memo } from "react";
 import RecipeButton from "../../../components/RecipeButton";
 import { useGetRecipeByIdQuery } from "../../../services/recipe";
 import { useGetUserByIdQuery } from "../../../services/user";
@@ -78,7 +78,9 @@ const AuthorNickName = ({ authorId = "" }) => {
   );
 };
 
-export default RecipeItemDetailed;
+export default memo(RecipeItemDetailed, (prevProps, nextProps) => {
+  return prevProps.recipeId === nextProps.recipeId;
+});
 
 const styles = StyleSheet.create({
   subSection: {

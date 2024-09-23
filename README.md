@@ -108,6 +108,7 @@ La seguridad de la aplicación se enfoca en proteger los datos de los usuarios y
 
 - Las categorías son de solo lectura para todos los usuarios.
 
+### 4.5. Database rules:
 ```
 {
   "rules": {

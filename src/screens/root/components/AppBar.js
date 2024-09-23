@@ -7,8 +7,6 @@ import {
   TextInput,
   ScrollView,
   Keyboard,
-  Platform,
-  StatusBar,
 } from "react-native";
 
 import Fontisto from "@expo/vector-icons/Fontisto";
@@ -292,11 +290,13 @@ const SearchInput = ({ tabNavigator }) => {
 
 const RecommendationList = ({ onSelectedItem }) => {
   const recommendation = [
-    "Saltado de Pollo",
-    "Choripan",
-    "Ensalada de frutas",
-    "Pizza de carne",
-    "Saltado de Pollo",
+    "Tacos de pollo",
+    "Pastel de chocolate",
+    "Pollo a la brasa",
+    "Arroz chaufa",
+    "Agua de maracuyá",
+    "Alitas acevichadas",
+    "Ensalada rusa"
   ];
 
   return (
@@ -333,11 +333,7 @@ export default AppBar;
 const styles = StyleSheet.create({
   appBar: {
     width: "100%",
-    paddingBottom: dimensions.layoutVerticalPadding,
-    paddingTop:
-      Platform.OS === "android"
-        ? (StatusBar.currentHeight || 0) + dimensions.layoutVerticalPadding
-        : dimensions.layoutVerticalPadding,
+    paddingVertical: dimensions.layoutVerticalPadding,
     paddingHorizontal: dimensions.layoutHorizontalPadding,
     borderBottomLeftRadius: dimensions.layoutBorderRadius,
     borderBottomRightRadius: dimensions.layoutBorderRadius,

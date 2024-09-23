@@ -79,14 +79,18 @@ const StackNavigator = () => {
       {!authUser && (
         <Stack.Screen name="authentication" component={Authentication} />
       )}
+      <Stack.Screen name="root" component={AppRoot} />
+      <Stack.Screen name="recipe" component={Recipe} />
       {authUser && (
         <>
-          <Stack.Screen name="create" component={CreateRecipe} />
+          <Stack.Screen
+            name="create"
+            component={CreateRecipe}
+            initialParams={{ recipe: {} }}
+          />
           <Stack.Screen name="edit" component={EditProfile} />
         </>
       )}
-      <Stack.Screen name="root" component={AppRoot} />
-      <Stack.Screen name="recipe" component={Recipe} />
     </Stack.Navigator>
   );
 };

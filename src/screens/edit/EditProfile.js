@@ -1,9 +1,7 @@
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
-  StatusBar,
   ScrollView,
   TouchableOpacity,
   Modal,
@@ -85,7 +83,6 @@ const EditContent = ({ user = {} }) => {
     <BottomSheetProvider>
       <View style={styles.editProfile}>
         <View style={styles.appBarContainer}>
-          <View style={styles.statusBar} />
           <View style={styles.appBar}>
             <PopButton style={styles.popButton} />
             <Text style={styles.titleScreen}>EDITAR PERFIL</Text>
@@ -165,9 +162,6 @@ const styles = StyleSheet.create({
     gap: dimensions.layoutVerticalGap,
     paddingHorizontal: dimensions.layoutHorizontalPadding,
     paddingVertical: dimensions.layoutVerticalPadding,
-  },
-  statusBar: {
-    height: Platform.OS === "android" ? StatusBar.currentHeight || 0 : 0,
   },
   appBar: {
     paddingVertical: dimensions.layoutVerticalPadding,

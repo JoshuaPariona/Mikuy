@@ -17,12 +17,13 @@ const CookBook = () => {
     <FlatList
       key={"cookbook"}
       keyboardDismissMode="on-drag"
+      maxToRenderPerBatch={10}
       contentContainerStyle={styles.layout}
       showsVerticalScrollIndicator={false}
       overScrollMode="never"
       data={recipeIds}
       keyExtractor={(item) => item}
-      renderItem={({ item }) => <RecipeFilterWrapper recipeId={item} />}
+      renderItem={({ item }) => <RecipeFilterWrapper key={item} recipeId={item} />}
     />
   );
 };

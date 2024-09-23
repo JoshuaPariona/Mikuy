@@ -1,8 +1,6 @@
 import {
   StyleSheet,
   Image,
-  Platform,
-  StatusBar,
   ScrollView,
   View,
   Animated,
@@ -168,18 +166,12 @@ const styles = StyleSheet.create({
   },
   popButton: {
     position: "absolute",
-    top:
-      Platform.OS === "android"
-        ? (StatusBar.currentHeight || 0) + dimensions.layoutVerticalPadding
-        : dimensions.layoutVerticalPadding,
+    top: dimensions.layoutVerticalPadding,
     left: dimensions.layoutHorizontalPadding,
   },
   bookMarkButton: {
     position: "absolute",
-    top:
-      Platform.OS === "android"
-        ? (StatusBar.currentHeight || 0) + dimensions.layoutVerticalPadding
-        : dimensions.layoutVerticalPadding,
+    top: dimensions.layoutVerticalPadding,
     right: dimensions.layoutHorizontalPadding,
     height: 45,
     width: 45,

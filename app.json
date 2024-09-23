@@ -3,13 +3,12 @@
     "name": "Mikuy",
     "slug": "mikuy",
     "version": "1.0.0",
-    "orientation": "default",
+    "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "backgroundColor": "#FFFFFF",
     "splash": {
       "image": "./assets/images/mikuy_logo.png",
-      "resizeMode": "none",
       "backgroundColor": "#FF8731"
     },
     "ios": {
@@ -18,11 +17,10 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FF8731"
-      }
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
+        "backgroundColor": "#FFFFFF"
+      },
+      "permissions": ["android.permission.RECORD_AUDIO"],
+      "package": "com.majornutcracker.mikuy"
     },
     "plugins": [
       [
@@ -31,6 +29,11 @@
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "ba6e52c1-d92e-49a0-a558-3fdf0d999dfe"
+      }
+    }
   }
 }
