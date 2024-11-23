@@ -144,6 +144,8 @@ Para el diseño de la interfaz de usuario (UI) de la aplicación de recetario, s
 
 En la fase inicial del proyecto, se crearon gráficos de baja fidelidad (wireframes) que sirvieron como guías estructurales para definir la disposición y la funcionalidad básica de cada pantalla. Estos bocetos de baja fidelidad proporcionaron una visión clara de la navegación y la jerarquía de información dentro de la aplicación, ayudando a establecer un flujo de usuario lógico y permitiendo realizar ajustes tempranos antes de pasar a un diseño más detallado.
 
+Creditos de Diseño: [Valery Andrea Delgado de la Cruz](#7-contact)
+
 [Mikuy UI design](https://www.figma.com/design/YNCdpczyLHCPDkMeZYovsO/Mikuy-App?node-id=2-2&t=X98abTYheGYU2Npa-1)
 
 ## 4. App security
@@ -286,4 +288,12 @@ Siguientes Pasos para el Desarrollo de la App
 
 ### Whatsapp: +51 945 368 569
 
-### Linkedin: [Joshua Bryan Pariona Santiago](www.linkedin.com/in/joshua-bryan-pariona-santiago-7a808727b)
+### Linkedin: [Joshua Bryan Pariona Santiago](https://www.linkedin.com/in/joshua-bryan-pariona-santiago-7a808727b)
+
+---
+
+### Email: delgadodelacruzvaleryandrea@gmail.com
+
+### Whatsapp: +51 945 409 297
+
+### Linkedin: [Valery Andrea Delgado de la Cruz](https://www.linkedin.com/in/valery-andrea-delgado-de-la-cruz-119a6a2bb/)
